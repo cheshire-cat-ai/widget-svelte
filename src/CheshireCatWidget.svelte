@@ -55,7 +55,7 @@
 
 		catApi = new CatClient({
 			...networkConfig,
-			credential: parent.getAttribute("data-jwt"),
+			credential: parent.getAttribute("data-credential"),
 			timeout: 15000,
 			instant: true,
 			ws: {
