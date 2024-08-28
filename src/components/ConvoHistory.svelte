@@ -1,7 +1,19 @@
 <script>
     import { afterUpdate } from "svelte";
-    import { marked } from 'marked';
-    //import { Remarkable } from "remarkable";
+    import { Marked } from 'marked';
+	import { markedHighlight } from "marked-highlight";
+	import hljs from "highlight.js";
+	import 'highlight.js/styles/stackoverflow-light.css';
+
+	const marked = new Marked(
+		markedHighlight({
+			langPrefix: 'hljs language-',
+			highlight(code, lang, info) {
+				const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+				return hljs.highlight(code, { language }).value;
+			}
+		})
+	);
 
     export let convo = [];
 
@@ -14,9 +26,11 @@
 
 <div id="ccat-history" bind:this={element}>
 
+	<slot></slot>
+
     {#each convo as msg}
-        {#if msg.who == "cat"}			
-            <div class="ccat-message">{@html marked.parse(msg.content)}</div>
+        {#if msg.who == "cat"}
+            <div class="ccat-message">{@html marked.parse(msg.content)}<pre></div>
         {:else}
             <div class="human-message">{@html marked.parse(msg.content)}</div>
         {/if}
@@ -30,7 +44,7 @@
     #ccat-history {
 		overflow-y: scroll;
 		scroll-behavior: smooth;
-        padding-bottom: 50px;
+		padding: 5px;
 	}
 
 	#ccat-history::-webkit-scrollbar {
@@ -47,11 +61,14 @@
     .ccat-message {
 		padding: 5px;
 		margin: 10px;
+		border-radius: 3px;
 	}
 
 	.human-message {
 		padding: 3px 20px;
 		margin: 20px;
-		background-color: rgb(231, 230, 230);
-	}   
+		border-radius: 3px;
+		color: white;
+		background-color: rgb(135, 135, 135);
+	}
 </style>

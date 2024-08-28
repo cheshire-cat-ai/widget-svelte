@@ -1,8 +1,8 @@
 //import './app.css'
-import App from './App.svelte'
+import CheshireCatWidget from './CheshireCatWidget.svelte'
 
-const app = new App({
-  target: document.getElementById('app'),
+const app = new CheshireCatWidget({
+  target: document.getElementById('cheshire-cat-widget'),
 })
 
 export default app
