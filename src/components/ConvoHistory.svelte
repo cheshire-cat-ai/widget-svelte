@@ -84,6 +84,6 @@
 		margin: 20px;
 		border-radius: 3px;
 		color: white;
-		background-color: rgb(135, 135, 135);
+		background-color: #444;
 	}
 </style>

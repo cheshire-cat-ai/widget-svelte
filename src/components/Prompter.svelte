@@ -74,29 +74,42 @@
 	#ccat-query {
 		width: 100%;
         resize: none;
+
+        background-color: #eee;
         
         padding-top: 10px;
         padding-left: 10px;
         
-        border: 2px gray solid;
+        border: none;
         border-radius: 3px;
-        
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 
         font-family: inherit;
         font-size: inherit;
     }
 
     #ccat-send-button {
+
+        background-color: inherit;
         cursor: pointer;
 
         margin-left: 5px;
 
-        border: 2px gray solid;
+        border: none;
         border-radius: 3px;
 	}
 
     #ccat-send-button:disabled, #ccat-query:disabled {
         opacity: 0.5;
+    }
+
+    #ccat-send-button:hover {
+        opacity: 0.5;
+    }
+
+    #ccat-query:focus-visible, #ccat-query:active {
+        border: none;
+        outline: none;
+        color: white;
+		background-color: #444;
     }
 </style>
