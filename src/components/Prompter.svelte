@@ -36,7 +36,6 @@
             on:keydown={keyboardSubmit}
             bind:value={query}
             disabled={!active}
-            autofocus
         />
         <button
             id="ccat-send-button"

@@ -2,7 +2,22 @@
     import { afterUpdate } from "svelte";
     import { Marked } from 'marked';
 	import { markedHighlight } from "marked-highlight";
-	import hljs from "highlight.js";
+
+	// importing highlightjslanguages manually otherwise bundle size blows up
+	import hljs from 'highlight.js/lib/core';
+	import javascript from 'highlight.js/lib/languages/javascript';
+	import plaintext from 'highlight.js/lib/languages/plaintext';
+	import python from 'highlight.js/lib/languages/python';
+	import xml from 'highlight.js/lib/languages/xml';
+	import yaml from 'highlight.js/lib/languages/yaml';
+
+	hljs.registerLanguage('plaintext', plaintext);
+	hljs.registerLanguage('javascript', javascript);
+	hljs.registerLanguage('python', python);
+	hljs.registerLanguage('xml', xml);
+	hljs.registerLanguage('yaml', yaml);
+	
+	// color theme
 	import 'highlight.js/styles/stackoverflow-light.css';
 
 	const marked = new Marked(
