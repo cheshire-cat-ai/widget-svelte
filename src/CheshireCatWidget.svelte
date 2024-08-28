@@ -126,7 +126,7 @@
 	/>
 </div>
 
-<style global>
+<style>
 	#ccat-chat-widget {
 
 		background-color:white;

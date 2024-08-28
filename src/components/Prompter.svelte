@@ -62,7 +62,7 @@
     </button>
 </div>
     
-<style global>
+<style>
     #ccat-toolbar {
 		display: flex;
 		justify-content: space-between;

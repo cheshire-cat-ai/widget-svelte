@@ -5,12 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		svelte({
-			emitCss: false,
-			compilerOptions: {
-			  css: false
-			}
-		  }),
+		svelte(),
 		visualizer({
 			filename: 'bundle-stats.html',
 			open: true, // Automatically open the report in the default browser
