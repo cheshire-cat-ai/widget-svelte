@@ -1,3 +1,4 @@
+/*
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 export default {
@@ -5,3 +6,13 @@ export default {
   // for more information about preprocessors
   preprocess: vitePreprocess(),
 }
+*/
+
+// installing this to disable CSS scoping
+import { sveltePreprocess } from 'svelte-preprocess';
+
+const config = {
+  preprocess: sveltePreprocess()
+}
+
+export default config;

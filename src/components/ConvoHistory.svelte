@@ -54,7 +54,7 @@
 </div>
 
 
-<style>
+<style global>
 
     #ccat-history {
 		overflow-y: scroll;

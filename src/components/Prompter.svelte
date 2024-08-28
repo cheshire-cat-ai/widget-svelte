@@ -3,8 +3,10 @@
     import catIcon from "./../assets/img/ccat_icon.png"
     
     export let submitCallback;
-    export let active
+    export let active;
 
+    let textareaElement;
+    let firstInteraction = true;
     let query = ""
 
     const submit = () => {
@@ -26,27 +28,41 @@
             submit()
         }
     };
+
+    // Reactive statement to focus the textarea when active is true
+    $: if(active && textareaElement){
+        if(firstInteraction){
+            // do not focus at first activation
+            firstInteraction = false;
+        } else {
+            // focus on every other activation
+            setTimeout(()=> {
+                textareaElement.focus();
+            }, 10);
+        }
+    }
     
-    </script>
+</script>
     
-    <div id="ccat-toolbar">
-        <textarea
-            id="ccat-query"
-            placeholder="send message to AI"
-            on:keydown={keyboardSubmit}
-            bind:value={query}
-            disabled={!active}
-        />
-        <button
-            id="ccat-send-button"
-            disabled={!active}
-            on:click={buttonSubmit}
-        >
-            <img width="30px" src={catIcon} alt="send">
-        </button>
-    </div>
+<div id="ccat-toolbar">
+    <textarea
+        id="ccat-query"
+        placeholder="Ask the Cat"
+        on:keydown={keyboardSubmit}
+        bind:value={query}
+        bind:this={textareaElement}
+        disabled={!active}
+    />
+    <button
+        id="ccat-send-button"
+        disabled={!active}
+        on:click={buttonSubmit}
+    >
+        <img width="30px" src={catIcon} alt="send">
+    </button>
+</div>
     
-<style>
+<style global>
     #ccat-toolbar {
 		display: flex;
 		justify-content: space-between;

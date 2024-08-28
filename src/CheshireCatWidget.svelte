@@ -8,6 +8,7 @@
     import { onMount } from "svelte";
 
 	let messages = []
+	let isOpen = false
 	let promptEnabled = true
 	let catApi
 	
@@ -24,6 +25,8 @@
 	};
 	
 	const sendMessage = (message) => {
+
+		isOpen = true
 
 		messages = [
 			...messages,
@@ -49,6 +52,10 @@
 	
 	if(networkConfig.pathname != "/") {
 		networkConfig.port = "" + networkConfig.port + networkConfig.pathname;
+	}
+
+	const toggle = () => {
+		isOpen = !isOpen
 	}
 
 	onMount(() => {
@@ -97,24 +104,41 @@
 
 </script>
 
-<div id="ccat-chat-widget">
-	
-	<ConvoHistory convo={messages}>
-		<a id="ccat-credits" target="_blank" href="https://cheshirecat.ai">
-			<img src={catLogo} alt="Powered by the Cheshire Cat AI" />
-		</a>
-	</ConvoHistory>
+<div id="ccat-chat-widget" class="ccat-chat-widget-{isOpen? "open" : "closed"}">
 
-	<Prompter submitCallback={sendMessage} active={promptEnabled}/>
+	
+	{#if isOpen}
+	
+		<div id="ccat-close-open-button" on:click={toggle}>▼</div>
+
+		<ConvoHistory convo={messages}>
+			<a id="ccat-credits" target="_blank" href="https://cheshirecat.ai">
+				<img src={catLogo} alt="Powered by the Cheshire Cat AI" />
+			</a>
+		</ConvoHistory>
+	{:else}
+		<div id="ccat-close-open-button" on:click={toggle}>▲</div>
+	{/if}
+		
+	<Prompter
+		submitCallback={sendMessage}
+		active={promptEnabled}
+	/>
 </div>
 
-<style>
+<style global>
 	#ccat-chat-widget {
+
+		background-color:white;
+		z-index: 100;
+
+		font-size: medium;
+
 		position: fixed;
 		bottom: 10px;
 		right: 10px;
-		width: 400px;
-		height: 600px;
+		width: 500px;
+		
 
 		display: flex;
 		flex-direction: column;
@@ -124,13 +148,25 @@
 		box-shadow: 0 0 5px rgba(105, 105, 105, 0.5);
 	}
 
+	.ccat-chat-widget-open {
+		height: 600px;
+	}
+
+	#ccat-close-open-button {
+		text-align: right;
+		cursor: pointer;
+		font-size: large;
+		color: gray;
+		padding: 7px;
+		padding-bottom: 0px;
+	}
+
 	#ccat-credits {
 		position: relative;
 		display: flex;
 		justify-content: center;
 		width: 100%;
 		
-		padding-top: 50px;
 		padding-bottom: 30px;
 	}
 
