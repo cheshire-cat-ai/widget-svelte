@@ -1,5 +1,7 @@
 <script>
     import { afterUpdate } from "svelte";
+	import { store } from '../store';
+	import { catService } from "../cat"
     import { Marked } from 'marked';
 	import { markedHighlight } from "marked-highlight";
 
@@ -29,13 +31,32 @@
 			}
 		})
 	);
-
-    export let convo = [];
-
-    let element;
+	
+	let element;
+	
+	catService.registerMessageCallback((msg)=> {
+		store.update(state => {
+			const lastMessageIndex = state.messages.length - 1
+			let lastMessage = {...state.messages[lastMessageIndex]}
+			if(msg.type == "chat_token"){
+				if(lastMessage.content == "...thinking"){
+					lastMessage.content = ""
+				}
+				lastMessage.content += msg.content
+			}
+			if(msg.type == "chat"){
+				lastMessage.content = msg.content
+				state.promptEnabled = true
+			}
+			state.messages[lastMessageIndex] = lastMessage
+			return state
+		})
+	})
 
     afterUpdate(() => {
-        element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+		setTimeout(() => {
+			element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+		}, 50);
     });
 </script>
 
@@ -43,7 +64,7 @@
 
 	<slot></slot>
 
-    {#each convo as msg}
+    {#each $store.messages as msg}
         {#if msg.who == "cat"}
             <div class="ccat-message">{@html marked.parse(msg.content)}<pre></div>
         {:else}
@@ -83,7 +104,6 @@
 		padding: 3px 20px;
 		margin: 20px;
 		border-radius: 3px;
-		color: white;
-		background-color: #444;
+		background-color: #ddd;
 	}
 </style>

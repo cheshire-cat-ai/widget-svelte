@@ -5,125 +5,37 @@
 	import catLogo from "./assets/img/poweredby.png";
 	import ConvoHistory from "./components/ConvoHistory.svelte";
 	import Prompter from "./components/Prompter.svelte";
+	import { store } from './store';
+	import { catService } from "./cat"
     import { onMount } from "svelte";
-
-	let messages = []
-	let isOpen = false
-	let promptEnabled = true
-	let catApi
-	
-	const thinkingMessage = "...thinking"
-
-	const dissectURL = (url) => {
-		url = new URL(url)
-		return {
-			baseUrl: url.hostname,
-			port: url.port,
-			secure: url.protocol == "https:",
-			pathname: url.pathname
-		}
-	};
-	
-	const sendMessage = (message) => {
-
-		isOpen = true
-
-		messages = [
-			...messages,
-			{
-				who: "human",
-				content: message,
-			},
-			{
-				who: "cat",
-				content: thinkingMessage
-			}
-		]
-		
-		promptEnabled = false;
-		catApi.send(message, {});	// TODO: additional security layer
-	};
 	
 	const parent = document.getElementById("cheshire-cat-widget");
-	
-	const networkConfig = dissectURL(
-		parent.getAttribute("data-url")
-	);
-	
-	if(networkConfig.pathname != "/") {
-		networkConfig.port = "" + networkConfig.port + networkConfig.pathname;
-	}
-
-	const toggle = () => {
-		isOpen = !isOpen
-	}
 
 	onMount(() => {
-
-		catApi = new CatClient({
-			...networkConfig,
-			credential: parent.getAttribute("data-credential"),
-			timeout: 15000,
-			instant: true,
-			ws: {
-				retries: 5,
-				delay: 2000,
-				onFailed: () => {
-					console.error(
-						"Failed to connect WebSocket after several retries.",
-					);
-				},
-			},
-		});
-
-		catApi.onMessage((msg)=> {
-			if(msg.type == "chat_token"){
-				if(messages[messages.length-1].content == thinkingMessage){
-					messages[messages.length-1].content = ""
-				}
-				messages[messages.length-1].content += msg.content
-			}
-			if(msg.type == "chat"){
-				messages[messages.length-1].content = msg.content
-				promptEnabled = true
-			}
-		})
-		
-		messages = [
-			{
-				who: "cat",
-				content: "Hello dear,\n\nI'm the Cheshire Cat AI community assistant.  \nHow can I help you? Please remember:\n\n- I'm just an AI, so double check my responses.\n\n- By chatting with me, you agree to use your anonymous messages to improve my memory.",
-			}
-		];
-
-		// destroy callback
-		return () => {
-			catApi.close();
-		}
+		catService.connect(
+			parent.getAttribute("data-url"),
+			parent.getAttribute("data-credential"),
+		)
 	})
 
 </script>
 
-<div id="ccat-chat-widget" class="ccat-chat-widget-{isOpen? "open" : "closed"}">
+<div id="ccat-chat-widget" class="ccat-chat-widget-{$store.isOpen? "open" : "closed"}">
 
 	
-	{#if isOpen}
+	{#if $store.isOpen}
 	
-		<div id="ccat-close-open-button" on:click={toggle}>▼</div>
+		<div id="ccat-close-open-button" on:click={() => store.toggle()}>▼</div>
 
-		<ConvoHistory convo={messages}>
+		<ConvoHistory>
 			<a id="ccat-credits" target="_blank" href="https://cheshirecat.ai">
 				<img src={catLogo} alt="Powered by the Cheshire Cat AI" />
 			</a>
 		</ConvoHistory>
-	{:else}
-		<div id="ccat-close-open-button" on:click={toggle}>▲</div>
 	{/if}
-		
-	<Prompter
-		submitCallback={sendMessage}
-		active={promptEnabled}
-	/>
+	
+	
+	<Prompter/>
 </div>
 
 <style>

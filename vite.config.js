@@ -8,7 +8,7 @@ export default defineConfig({
 		svelte(),
 		visualizer({
 			filename: 'bundle-stats.html',
-			open: true, // Automatically open the report in the default browser
+			open: false, // Automatically open the report in the default browser
 		})
 	],
 	build: {
